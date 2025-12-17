@@ -1,26 +1,22 @@
--- Insertar el usuario por defecto (bee)
-INSERT INTO users (login, password, email, admin, activated) VALUES
-('bee', 'bug', 'bee@bwapp.com', '1', '1');
+-- Primero veamos qué tienes
+DESCRIBE users;
 
--- Insertar otros usuarios de prueba
-INSERT INTO users (login, password, email, admin, activated) VALUES
-('admin', 'admin', 'admin@bwapp.com', '1', '1'),
-('user1', 'password1', 'user1@bwapp.com', '0', '1'),
-('user2', 'password2', 'user2@bwapp.com', '0', '1'),
-('test', 'test', 'test@bwapp.com', '0', '1');
+-- Si falta activated, agrégalo
+ALTER TABLE users ADD COLUMN activated VARCHAR(1) DEFAULT '1';
 
--- Insertar datos en heroes (para algunos ejercicios)
-INSERT INTO heroes (login, password) VALUES
-('neo', 'trinity'),
-('alice', 'loveZombies'),
-('thor', 'Asgard'),
-('wolverine', 'Logan'),
-('johnny', 'password');
+-- O si prefieres recrear la tabla correctamente
+DROP TABLE IF EXISTS users;
 
--- Insertar películas (para ejercicios de SQLi)
-INSERT INTO movies (title, release_year, genre, main_character, imdb) VALUES
-('The Matrix', 1999, 'Sci-Fi', 'Neo', 8.7),
-('Iron Man', 2008, 'Action', 'Tony Stark', 7.9),
-('Inception', 2010, 'Sci-Fi', 'Cobb', 8.8),
-('The Dark Knight', 2008, 'Action', 'Batman', 9.0),
-('Pulp Fiction', 1994, 'Crime', 'Vincent Vega', 8.9);
+CREATE TABLE users (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    login VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    secret VARCHAR(100),
+    activation_code VARCHAR(100),
+    activated ENUM('0', '1') DEFAULT '0',
+    reset_code VARCHAR(100),
+    admin ENUM('0', '1') DEFAULT '0',
+    PRIMARY KEY (id),
+    UNIQUE KEY login (login)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
