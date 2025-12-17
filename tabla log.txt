@@ -1,22 +1,25 @@
--- Primero veamos qué tienes
-DESCRIBE users;
+-- Actualizar contraseña de 'bee' a SHA1 de 'bug'
+UPDATE users SET password = SHA1('bug') WHERE login = 'bee';
 
--- Si falta activated, agrégalo
-ALTER TABLE users ADD COLUMN activated VARCHAR(1) DEFAULT '1';
+-- Actualizar otros usuarios
+UPDATE users SET password = SHA1('admin') WHERE login = 'admin';
+UPDATE users SET password = SHA1('password1') WHERE login = 'user1';
+UPDATE users SET password = SHA1('password2') WHERE login = 'user2';
+UPDATE users SET password = SHA1('test') WHERE login = 'test';
 
--- O si prefieres recrear la tabla correctamente
-DROP TABLE IF EXISTS users;
+-- Verificar
+SELECT login, password, LENGTH(password) as hash_length FROM users;
 
-CREATE TABLE users (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    login VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    email VARCHAR(100),
-    secret VARCHAR(100),
-    activation_code VARCHAR(100),
-    activated ENUM('0', '1') DEFAULT '0',
-    reset_code VARCHAR(100),
-    admin ENUM('0', '1') DEFAULT '0',
-    PRIMARY KEY (id),
-    UNIQUE KEY login (login)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- Limpiar tabla
+DELETE FROM users;
+
+-- Insertar usuarios con contraseñas SHA1
+INSERT INTO users (login, password, email, admin, activated) VALUES 
+('bee', SHA1('bug'), 'bee@bwapp.com', '1', '1'),
+('admin', SHA1('admin'), 'admin@bwapp.com', '1', '1'),
+('user1', SHA1('password1'), 'user1@bwapp.com', '0', '1'),
+('user2', SHA1('password2'), 'user2@bwapp.com', '0', '1'),
+('test', SHA1('test'), 'test@bwapp.com', '0', '1');
+
+-- Verificar
+SELECT login, password FROM users;
