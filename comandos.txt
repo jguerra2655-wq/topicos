@@ -1,8 +1,22 @@
 docker run -d \
-  --name multillidae-mysql \
+  --name multillidae \
   --network multillidae-net \
-  -e MYSQL_ROOT_PASSWORD=mutillidae \
-  -e MYSQL_DATABASE=mutillidae \
-  -e MYSQL_USER=mutillidae \
+  -p 80:80 \
+  -e DB_HOST=multillidae-mysql \
+  -e DB_NAME=mutillidae \
+  -e DB_USER=mutillidae \
+  -e DB_PASSWORD=mutillidae \
+  citizenstig/nowasp
+
+
+# Eliminar contenedor actual
+docker stop multillidae && docker rm multillidae
+
+# Ejecutar con variables de entorno para configuración básica
+docker run -d \
+  -p 80:80 \
+  --name multillidae \
+  -e MYSQL_HOST=127.0.0.1 \
+  -e MYSQL_USER=root \
   -e MYSQL_PASSWORD=mutillidae \
-  mysql:5.7
+  citizenstig/nowasp
