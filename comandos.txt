@@ -1,32 +1,8 @@
-cat > docker-compose.yml << 'EOF'
-version: '3'
-services:
-  db:
-    image: mysql:5.7
-    container_name: multillidae-db
-    environment:
-      MYSQL_ROOT_PASSWORD: mutillidae
-      MYSQL_DATABASE: mutillidae
-      MYSQL_USER: mutillidae
-      MYSQL_PASSWORD: mutillidae
-    volumes:
-      - mysql_data:/var/lib/mysql
-    restart: unless-stopped
-
-  web:
-    image: citizenstig/nowasp
-    container_name: multillidae-web
-    ports:
-      - "80:80"
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_NAME: mutillidae
-      DB_USER: mutillidae
-      DB_PASSWORD: mutillidae
-    restart: unless-stopped
-
-volumes:
-  mysql_data:
-EOF
+docker run -d \
+  --name multillidae-mysql \
+  --network multillidae-net \
+  -e MYSQL_ROOT_PASSWORD=mutillidae \
+  -e MYSQL_DATABASE=mutillidae \
+  -e MYSQL_USER=mutillidae \
+  -e MYSQL_PASSWORD=mutillidae \
+  mysql:5.7
